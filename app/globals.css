@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f9fafb;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --secondary: #a5b4fc;
+  --secondary-foreground: #1e1e2f;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #a5b4fc;
+  --accent-foreground: #1e1e2f;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #f9fafb;
+  --ring: #4f46e5;
+  --chart-1: #4f46e5;
+  --chart-2: #a5b4fc;
+  --chart-3: #ef4444;
+  --chart-4: #8b5cf6;
+  --chart-5: #f59e0b;
+  --radius: 0.5rem;
+  --sidebar: #f9fafb;
+  --sidebar-foreground: #111827;
+  --sidebar-primary: #4f46e5;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #a5b4fc;
+  --sidebar-accent-foreground: #1e1e2f;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #4f46e5;
+  --font-open-sans: "Open Sans", sans-serif;
+  --font-montserrat: "Montserrat", serif;
+}
+
+.dark {
+  --background: #1e1e2f;
+  --foreground: #f9fafb;
+  --card: #1e1e2f;
+  --card-foreground: #f9fafb;
+  --popover: #1e1e2f;
+  --popover-foreground: #f9fafb;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --secondary: #374151;
+  --secondary-foreground: #f9fafb;
+  --muted: #374151;
+  --muted-foreground: #9ca3af;
+  --accent: #a5b4fc;
+  --accent-foreground: #1e1e2f;
+  --destructive: #ef4444;
+  --destructive-foreground: #f9fafb;
+  --border: #374151;
+  --input: #374151;
+  --ring: #4f46e5;
+  --chart-1: #4f46e5;
+  --chart-2: #a5b4fc;
+  --chart-3: #ef4444;
+  --chart-4: #8b5cf6;
+  --chart-5: #f59e0b;
+  --sidebar: #1e1e2f;
+  --sidebar-foreground: #f9fafb;
+  --sidebar-primary: #4f46e5;
+  --sidebar-primary-foreground: #f9fafb;
+  --sidebar-accent: #374151;
+  --sidebar-accent-foreground: #f9fafb;
+  --sidebar-border: #374151;
+  --sidebar-ring: #4f46e5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: var(--font-open-sans);
+  --font-serif: var(--font-montserrat);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Added flip card animations for results section */
+.flip-card {
+  background-color: transparent;
+  width: 100%;
+  height: 300px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
