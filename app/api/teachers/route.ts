@@ -16,14 +16,15 @@ export async function POST(req: Request) {
 
     // Валидация и преобразование данных
     const teacher = {
-      name: String(body.name || "").trim(),
-      subject: String(body.subject || "").trim(),
-      format: String(body.format || "online"),
-      pricePerHour: Number(body.pricePerHour) || 0,
-      experience: Number(body.experience) || 0,
-      description: body.description ? String(body.description).trim() : null,
-      photo: body.photo ? String(body.photo).trim() : null,
-    }
+  name: String(body.name || "").trim(),
+  subject: String(body.subject || "").trim(),
+  format: String(body.format || "online"),
+  price_per_hour: Number(body.pricePerHour) || 0, // <-- snake_case
+  experience: Number(body.experience) || 0,
+  description: body.description ? String(body.description).trim() : null,
+  photo: body.photo ? String(body.photo).trim() : null,
+}
+
 
     // Проверка обязательных полей
     if (!teacher.name || !teacher.subject) {
