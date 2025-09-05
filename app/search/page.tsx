@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { TeacherCard } from "@/components/teacher-card"
 import { teachersStore } from "@/lib/teachers-store"
 import type { TeacherFilters as Filters, Teacher } from "@/lib/types"
@@ -15,37 +15,30 @@ interface SearchResults {
 }
 
 export default function SearchPage() {
-  const allTeachers = teachersStore.getAllTeachers()
-  const subjects = teachersStore.getUniqueSubjects()
-
+  const [allTeachers, setAllTeachers] = useState<Teacher[]>([])
+  const [subjects, setSubjects] = useState<string[]>([])
   const [filters, setFilters] = useState<Filters>({})
   const [currentStep, setCurrentStep] = useState<FilterStep>("subject")
   const [savedResults, setSavedResults] = useState<SearchResults | null>(null)
 
+  // 🔹 грузим учителей из API при монтировании
+  useEffect(() => {
+    async function load() {
+      const teachers = await teachersStore.getAllTeachers()
+      setAllTeachers(teachers)
+      setSubjects(await teachersStore.getUniqueSubjects())
+    }
+    load()
+  }, [])
+
   const filteredTeachers = useMemo(() => {
     return allTeachers.filter((teacher) => {
-      // Filter by subject
-      if (filters.subject && teacher.subject !== filters.subject) {
-        return false
-      }
-
-      // Filter by format
+      if (filters.subject && teacher.subject !== filters.subject) return false
       if (filters.format && filters.format !== "both") {
-        if (teacher.format !== filters.format && teacher.format !== "both") {
-          return false
-        }
+        if (teacher.format !== filters.format && teacher.format !== "both") return false
       }
-
-      // Filter by minimum price
-      if (filters.minPrice && teacher.pricePerHour < filters.minPrice) {
-        return false
-      }
-
-      // Filter by maximum price
-      if (filters.maxPrice && teacher.pricePerHour > filters.maxPrice) {
-        return false
-      }
-
+      if (filters.minPrice && teacher.pricePerHour < filters.minPrice) return false
+      if (filters.maxPrice && teacher.pricePerHour > filters.maxPrice) return false
       return true
     })
   }, [allTeachers, filters])
