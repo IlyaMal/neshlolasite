@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -20,9 +20,17 @@ export default function AdminPage() {
   const [password, setPassword] = useState("")
   const [passwordError, setPasswordError] = useState("")
 
-  const [teachers, setTeachers] = useState(teachersStore.getAllTeachers())
+  const [teachers, setTeachers] = useState<Teacher[]>([])
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null)
   const [showForm, setShowForm] = useState(false)
+
+  useEffect(() => {
+    async function loadTeachers() {
+      const data = await teachersStore.getAllTeachers()
+      setTeachers(Array.isArray(data) ? data : [])
+    }
+    loadTeachers()
+  }, [])
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +41,43 @@ export default function AdminPage() {
       setPasswordError("Неверный пароль")
       setPassword("")
     }
+      const handleAddTeacher = async (data: TeacherFormData) => {
+    await teachersStore.addTeacher(data)
+    setTeachers(await teachersStore.getAllTeachers())
+    setShowForm(false)
   }
+}
+
+  const handleUpdateTeacher = async (data: TeacherFormData) => {
+    if (editingTeacher) {
+      await teachersStore.updateTeacher(editingTeacher.id, data)
+      setTeachers(await teachersStore.getAllTeachers())
+      setEditingTeacher(null)
+    }
+  }
+
+  const handleDeleteTeacher = async (id: string) => {
+    if (confirm("Вы уверены, что хотите удалить этого преподавателя?")) {
+      await teachersStore.deleteTeacher(id)
+      setTeachers(await teachersStore.getAllTeachers())
+    }
+  }
+
+  const handleEditTeacher = (teacher: Teacher) => {
+    setEditingTeacher(teacher)
+    setShowForm(false)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingTeacher(null)
+    setShowForm(false)
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setPassword("")
+  }
+  
 
   if (!isAuthenticated) {
     return (
@@ -70,41 +114,6 @@ export default function AdminPage() {
     )
   }
 
-  const handleAddTeacher = (data: TeacherFormData) => {
-    const newTeacher = teachersStore.addTeacher(data)
-    setTeachers(teachersStore.getAllTeachers())
-    setShowForm(false)
-  }
-
-  const handleUpdateTeacher = (data: TeacherFormData) => {
-    if (editingTeacher) {
-      teachersStore.updateTeacher(editingTeacher.id, data)
-      setTeachers(teachersStore.getAllTeachers())
-      setEditingTeacher(null)
-    }
-  }
-
-  const handleDeleteTeacher = (id: string) => {
-    if (confirm("Вы уверены, что хотите удалить этого преподавателя?")) {
-      teachersStore.deleteTeacher(id)
-      setTeachers(teachersStore.getAllTeachers())
-    }
-  }
-
-  const handleEditTeacher = (teacher: Teacher) => {
-    setEditingTeacher(teacher)
-    setShowForm(false)
-  }
-
-  const handleCancelEdit = () => {
-    setEditingTeacher(null)
-    setShowForm(false)
-  }
-
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    setPassword("")
-  }
 
   return (
     <div className="min-h-screen bg-background">
