@@ -41,12 +41,13 @@ export default function AdminPage() {
       setPasswordError("Неверный пароль")
       setPassword("")
     }
+  }
       const handleAddTeacher = async (data: TeacherFormData) => {
     await teachersStore.addTeacher(data)
     setTeachers(await teachersStore.getAllTeachers())
     setShowForm(false)
   }
-}
+
 
   const handleUpdateTeacher = async (data: TeacherFormData) => {
     if (editingTeacher) {
