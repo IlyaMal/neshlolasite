@@ -58,7 +58,7 @@ export async function PATCH(req: Request) {
   if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 })
 
   const body = await req.json()
-  const teacherData = mapPartialTeacherToDB(body)
+  const teacherData = mapPartialTeacherToDB(body) // ✅ преобразуем к snake_case
   teacherData.updated_at = new Date().toISOString()
 
   const { data, error } = await supabase
@@ -74,6 +74,7 @@ export async function PATCH(req: Request) {
 
   return NextResponse.json(data[0])
 }
+
 
 // DELETE /api/teachers?id=UUID
 export async function DELETE(req: Request) {
