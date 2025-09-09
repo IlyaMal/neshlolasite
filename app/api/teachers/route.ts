@@ -14,20 +14,6 @@ function mapTeacherToDB(body: any) {
   }
 }
 
-// Маппинг для обновления (только переданные поля)
-function mapPartialTeacherToDB(body: any) {
-  const mapped: any = {}
-  if (body.name !== undefined) mapped.name = String(body.name).trim()
-  if (body.subject !== undefined) mapped.subject = String(body.subject).trim()
-  if (body.experience !== undefined) mapped.experience = Number(body.experience)
-  if (body.pricePerHour !== undefined) mapped.price_per_hour = Number(body.pricePerHour)
-  if (body.format !== undefined) mapped.format = String(body.format)
-  if (body.description !== undefined)
-    mapped.description = body.description ? String(body.description).trim() : null
-  if (body.photo !== undefined) mapped.photo = body.photo ? String(body.photo).trim() : null
-
-  return mapped
-}
 
 // GET /api/teachers
 export async function GET() {
@@ -51,49 +37,4 @@ export async function POST(req: Request) {
   return NextResponse.json(data)
 }
 
-// PATCH /api/teachers?id=UUID
-export async function PATCH(req: Request) {
-  const { searchParams } = new URL(req.url)
-  const id = searchParams.get("id")
-  if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 })
 
-  const body = await req.json()
-  const teacherData = mapPartialTeacherToDB(body) // ✅ преобразуем к snake_case
-  teacherData.updated_at = new Date().toISOString()
-  console.log("PATCH → в базу пойдёт:", teacherData)
-
-
-  const { data, error } = await supabase
-    .from("teachers")
-    .update(teacherData)
-    .eq("id", id)
-    .select()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  if (!data || data.length === 0) {
-    return NextResponse.json({ error: "Преподаватель не найден" }, { status: 404 })
-  }
-
-  return NextResponse.json(data[0])
-}
-
-
-// DELETE /api/teachers?id=UUID
-export async function DELETE(req: Request) {
-  const { searchParams } = new URL(req.url)
-  const id = searchParams.get("id")
-  if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 })
-
-  const { data, error } = await supabase
-    .from("teachers")
-    .delete()
-    .eq("id", id)
-    .select()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  if (!data || data.length === 0) {
-    return NextResponse.json({ error: "Преподаватель не найден" }, { status: 404 })
-  }
-
-  return NextResponse.json({ message: "Преподаватель удалён", teacher: data[0] })
-}
