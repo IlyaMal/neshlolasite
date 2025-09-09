@@ -60,6 +60,8 @@ export async function PATCH(req: Request) {
   const body = await req.json()
   const teacherData = mapPartialTeacherToDB(body) // ✅ преобразуем к snake_case
   teacherData.updated_at = new Date().toISOString()
+  console.log("PATCH → в базу пойдёт:", teacherData)
+
 
   const { data, error } = await supabase
     .from("teachers")
