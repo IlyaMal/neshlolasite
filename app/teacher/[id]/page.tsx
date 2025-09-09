@@ -67,15 +67,19 @@ export default function TeacherPage({ params }: TeacherPageProps) {
                 {/* Avatar and Basic Info */}
                 <div className="flex flex-col items-center md:items-start">
                   <div className="h-32 w-32 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center mb-4">
-                    {teacher.avatar ? (
-                      <img
-                        src={teacher.avatar || "/placeholder.svg"}
-                        alt={teacher.name}
-                        className="h-32 w-32 rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-4xl font-semibold text-primary">{teacher.name.charAt(0)}</span>
-                    )}
+  {teacher.photo ? (
+    <img
+      src={teacher.photo || "/placeholder.svg"}
+      alt={teacher.name ?? "Преподаватель"}
+      className="h-32 w-32 rounded-full object-cover"
+    />
+  ) : (
+    <span className="text-4xl font-semibold text-primary">
+      {teacher.name?.charAt(0) ?? "?"}
+    </span>
+  )}
+</div>
+
                   </div>
 
                   <div className="text-center md:text-left">
