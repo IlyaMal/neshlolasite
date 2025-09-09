@@ -36,20 +36,33 @@ export async function POST(req: Request) {
   return NextResponse.json(data)
 }
 
-// PUT /api/teachers/:id
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const body = await req.json()
-  const teacherData = mapTeacherToDB(body)
+
+  // преобразуем к snake_case, но только для переданных ключей
+  const teacherData: Record<string, any> = {}
+  if (body.name !== undefined) teacherData.name = body.name
+  if (body.subject !== undefined) teacherData.subject = body.subject
+  if (body.experience !== undefined) teacherData.experience = body.experience
+  if (body.pricePerHour !== undefined) teacherData.price_per_hour = body.pricePerHour
+  if (body.format !== undefined) teacherData.format = body.format
+  if (body.description !== undefined) teacherData.description = body.description
+  if (body.photo !== undefined) teacherData.photo = body.photo
+  teacherData.updated_at = new Date().toISOString()
 
   const { data, error } = await supabase
     .from("teachers")
     .update(teacherData)
     .eq("id", params.id)
     .select()
-    .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+
+  if (!data || data.length === 0) {
+    return NextResponse.json({ error: "Преподаватель не найден" }, { status: 404 })
+  }
+
+  return NextResponse.json(data[0])
 }
 
 // DELETE /api/teachers/:id
@@ -59,8 +72,12 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     .delete()
     .eq("id", params.id)
     .select()
-    .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ message: "Преподаватель удалён", teacher: data })
+
+  if (!data || data.length === 0) {
+    return NextResponse.json({ error: "Преподаватель не найден" }, { status: 404 })
+  }
+
+  return NextResponse.json({ message: "Преподаватель удалён", teacher: data[0] })
 }
