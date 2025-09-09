@@ -1,6 +1,19 @@
 import { supabase } from "@/lib/supabase"
 import { NextResponse } from "next/server"
 
+// Преобразуем camelCase из фронтенда в snake_case для базы
+function mapTeacherToDB(body: any) {
+  return {
+    name: String(body.name || "").trim(),
+    subject: String(body.subject || "").trim(),
+    experience: Number(body.experience) || 0,
+    price_per_hour: Number(body.pricePerHour) || 0,
+    format: String(body.format || "online"),
+    description: body.description ? String(body.description).trim() : null,
+    photo: body.photo ? String(body.photo).trim() : null,
+  }
+}
+
 // GET /api/teachers
 export async function GET() {
   const { data, error } = await supabase.from("teachers").select("*")
@@ -10,45 +23,44 @@ export async function GET() {
 
 // POST /api/teachers
 export async function POST(req: Request) {
-  try {
-    const body = await req.json()
-    console.log("Получено на сервер:", body)
+  const body = await req.json()
+  const teacherData = mapTeacherToDB(body)
 
-    // Валидация и преобразование данных
-    const teacher = {
-  name: String(body.name || "").trim(),
-  subject: String(body.subject || "").trim(),
-  format: String(body.format || "online"),
-  price_per_hour: Number(body.pricePerHour) || 0, // <-- snake_case
-  experience: Number(body.experience) || 0,
-  description: body.description ? String(body.description).trim() : null,
-  photo: body.photo ? String(body.photo).trim() : null,
+  const { data, error } = await supabase
+    .from("teachers")
+    .insert([teacherData])
+    .select()
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json(data)
 }
 
+// PUT /api/teachers/:id
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const body = await req.json()
+  const teacherData = mapTeacherToDB(body)
 
-    // Проверка обязательных полей
-    if (!teacher.name || !teacher.subject) {
-      return NextResponse.json(
-        { error: "Поля name и subject обязательны" },
-        { status: 400 }
-      )
-    }
+  const { data, error } = await supabase
+    .from("teachers")
+    .update(teacherData)
+    .eq("id", params.id)
+    .select()
+    .single()
 
-    // Вставка в Supabase
-    const { data, error } = await supabase
-      .from("teachers")
-      .insert([teacher])
-      .select()
-      .single() // safe, т.к. всегда один объект
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json(data)
+}
 
-    if (error) {
-      console.error("Ошибка Supabase:", error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+// DELETE /api/teachers/:id
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  const { data, error } = await supabase
+    .from("teachers")
+    .delete()
+    .eq("id", params.id)
+    .select()
+    .single()
 
-    return NextResponse.json(data)
-  } catch (err: any) {
-    console.error("Ошибка сервера:", err)
-    return NextResponse.json({ error: err.message || "Неизвестная ошибка" }, { status: 500 })
-  }
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ message: "Преподаватель удалён", teacher: data })
 }
