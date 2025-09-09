@@ -40,14 +40,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   const body = await req.json()
 
   // преобразуем к snake_case, но только для переданных ключей
-  const teacherData: Record<string, any> = {}
-  if (body.name !== undefined) teacherData.name = body.name
-  if (body.subject !== undefined) teacherData.subject = body.subject
-  if (body.experience !== undefined) teacherData.experience = body.experience
-  if (body.pricePerHour !== undefined) teacherData.price_per_hour = body.pricePerHour
-  if (body.format !== undefined) teacherData.format = body.format
-  if (body.description !== undefined) teacherData.description = body.description
-  if (body.photo !== undefined) teacherData.photo = body.photo
+  const teacherData = mapTeacherToDB(body)
   teacherData.updated_at = new Date().toISOString()
 
   const { data, error } = await supabase
