@@ -80,7 +80,7 @@ export default function TeacherPage({ params }: TeacherPageProps) {
   )}
 </div>
 
-                  </div>
+
 
                   <div className="text-center md:text-left">
                     <h1 className="text-3xl font-bold text-foreground mb-2">{teacher.name}</h1>
