@@ -36,10 +36,17 @@ function fromDB(row: any) {
 
 // GET /api/teachers/:id
 export async function GET(req: Request, { params }: Params) {
-  const { data, error } = await supabase.from("teachers").select("*").eq("id", params.id).single()
+  const { data, error } = await supabase
+    .from("teachers")
+    .select("*")
+    .eq("id", params.id)
+    .single()
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
   return NextResponse.json(fromDB(data))
 }
+
 
 // PATCH /api/teachers/:id
 export async function PATCH(req: Request, { params }: Params) {
