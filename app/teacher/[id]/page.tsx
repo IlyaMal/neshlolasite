@@ -1,21 +1,3 @@
-"use client"
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { teachersStore } from "@/lib/teachers-store"
-import { formatPrice, formatExperience, formatTeachingFormat } from "@/lib/utils/format"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-
-interface TeacherPageProps {
-  params: {
-    id: string
-  }
-}
-
-"use client"
-
 import { useEffect, useState } from "react"
 import { teachersStore } from "@/lib/teachers-store"
 import { notFound } from "next/navigation"
