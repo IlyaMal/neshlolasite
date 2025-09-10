@@ -14,8 +14,35 @@ interface TeacherPageProps {
   }
 }
 
+"use client"
+
+import { useEffect, useState } from "react"
+import { teachersStore } from "@/lib/teachers-store"
+import { notFound } from "next/navigation"
+
+interface TeacherPageProps {
+  params: { id: string }
+}
+
 export default function TeacherPage({ params }: TeacherPageProps) {
-  const teacher = teachersStore.getTeacherById(params.id)
+  const [teacher, setTeacher] = useState<any | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadTeacher() {
+      const data = await teachersStore.getTeacherById(params.id)
+      if (!data) {
+        notFound()
+      }
+      setTeacher(data)
+      setLoading(false)
+    }
+    loadTeacher()
+  }, [params.id])
+
+  if (loading) {
+    return <div className="p-8 text-center">Загрузка...</div>
+  }
 
   if (!teacher) {
     notFound()
