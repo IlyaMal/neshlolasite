@@ -1,6 +1,13 @@
+"use client"
+
 import { useEffect, useState } from "react"
+import Link from "next/link"
+import { notFound, useRouter } from "next/navigation"
 import { teachersStore } from "@/lib/teachers-store"
-import { notFound } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { formatPrice, formatExperience, formatTeachingFormat } from "@/lib/utils/format"
 
 interface TeacherPageProps {
   params: { id: string }
@@ -9,34 +16,34 @@ interface TeacherPageProps {
 export default function TeacherPage({ params }: TeacherPageProps) {
   const [teacher, setTeacher] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     async function loadTeacher() {
       const data = await teachersStore.getTeacherById(params.id)
       if (!data) {
-        notFound()
+        router.push("/404") // заменил notFound(), чтобы не падало на клиенте
+        return
       }
       setTeacher(data)
       setLoading(false)
     }
     loadTeacher()
-  }, [params.id])
+  }, [params.id, router])
 
   if (loading) {
     return <div className="p-8 text-center">Загрузка...</div>
   }
 
   if (!teacher) {
-    notFound()
+    return <div className="p-8 text-center">Преподаватель не найден</div>
   }
 
   const handleBackClick = () => {
     if (typeof window !== "undefined" && (window as any).teacherSearchState?.savedResults) {
-      // Restore search results if available
       ;(window as any).teacherSearchState.restoreResults()
     }
   }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
