@@ -52,7 +52,7 @@ export default function TeacherPage({ params }: TeacherPageProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link
-                href="/"
+                href="/search"
                 onClick={handleBackClick}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
