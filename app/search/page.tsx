@@ -22,23 +22,33 @@ export default function SearchPage() {
   const [savedResults, setSavedResults] = useState<SearchResults | null>(null)
 
   // 🔹 грузим учителей из API при монтировании
-useEffect(() => {
-  async function load() {
-    const teachers = await teachersStore.getAllTeachers()
-    setAllTeachers(teachers)
-    setSubjects(await teachersStore.getUniqueSubjects())
-
-    // 🔹 восстанавливаем состояние, если оно было сохранено
-    if ((window as any).teacherSearchState?.savedResults) {
-      const saved = (window as any).teacherSearchState.savedResults as SearchResults
-      setFilters(saved.filters)
-      setCurrentStep(saved.step)
-      setSavedResults(saved)
+// 🔹 грузим учителей
+  useEffect(() => {
+    async function load() {
+      const teachers = await teachersStore.getAllTeachers()
+      setAllTeachers(teachers)
+      setSubjects(await teachersStore.getUniqueSubjects())
     }
-  }
-  load()
-}, [])
+    load()
+  }, [])
 
+  // 🔹 восстанавливаем состояние при монтировании
+  useEffect(() => {
+    const saved = sessionStorage.getItem("teacherSearchState")
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      setFilters(parsed.filters || {})
+      setCurrentStep(parsed.step || "subject")
+    }
+  }, [])
+
+  // 🔹 сохраняем при каждом изменении
+  useEffect(() => {
+    sessionStorage.setItem(
+      "teacherSearchState",
+      JSON.stringify({ filters, step: currentStep })
+    )
+  }, [filters, currentStep])
 
   const filteredTeachers = useMemo(() => {
     return allTeachers.filter((teacher) => {
