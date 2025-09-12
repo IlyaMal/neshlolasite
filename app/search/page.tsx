@@ -117,12 +117,7 @@ export default function SearchPage() {
                 <p className="text-sm text-muted-foreground">Найдите идеального преподавателя для ваших целей</p>
               </div>
             </div>
-            <Link
-              href="/admin"
-              className="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/90 transition-colors"
-            >
-              Админ-панель
-            </Link>
+            
           </div>
         </div>
       </header>
