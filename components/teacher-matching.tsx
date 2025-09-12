@@ -95,7 +95,7 @@ export function TeacherMatching() {
                   находит идеального ментора.
                 </p>
                 
-                <Button onClick={() => scrollToSection("#readiness")}size="lg">Найти моего преподавателя</Button>
+               <a href = "/search"> <Button size="lg">Найти моего преподавателя</Button></a>
               </CardContent>
             </Card>
           </div>
