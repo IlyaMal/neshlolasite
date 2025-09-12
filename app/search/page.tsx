@@ -101,10 +101,16 @@ export default function SearchPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">T</span>
-                </div>
-                <span className="text-xl font-bold text-foreground">TeacherFinder</span>
+                <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+    <img 
+      src="logo.svg" 
+      alt="Логотип" 
+      className="w-full h-full object-contain"
+    />
+  </div>
+            <span className="text-xl font-serif font-bold text-foreground">НЕШКОЛА</span>
+          </div>
               </Link>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-semibold text-foreground">Поиск преподавателей</h1>
