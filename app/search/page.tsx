@@ -22,14 +22,23 @@ export default function SearchPage() {
   const [savedResults, setSavedResults] = useState<SearchResults | null>(null)
 
   // 🔹 грузим учителей из API при монтировании
-  useEffect(() => {
-    async function load() {
-      const teachers = await teachersStore.getAllTeachers()
-      setAllTeachers(teachers)
-      setSubjects(await teachersStore.getUniqueSubjects())
+useEffect(() => {
+  async function load() {
+    const teachers = await teachersStore.getAllTeachers()
+    setAllTeachers(teachers)
+    setSubjects(await teachersStore.getUniqueSubjects())
+
+    // 🔹 восстанавливаем состояние, если оно было сохранено
+    if ((window as any).teacherSearchState?.savedResults) {
+      const saved = (window as any).teacherSearchState.savedResults as SearchResults
+      setFilters(saved.filters)
+      setCurrentStep(saved.step)
+      setSavedResults(saved)
     }
-    load()
-  }, [])
+  }
+  load()
+}, [])
+
 
   const filteredTeachers = useMemo(() => {
     return allTeachers.filter((teacher) => {
